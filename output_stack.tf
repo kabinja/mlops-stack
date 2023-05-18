@@ -8,7 +8,6 @@ resource "local_file" "stack_file" {
     stack_name: k3d_minimal_${replace(substr(timestamp(), 0, 16), ":", "_")}
     components:
       artifact_store:
-%{if var.enable_minio}
         id: ${uuid()}
         flavor: s3
         name: k3d-minio-${random_string.cluster_id.result}
@@ -17,20 +16,12 @@ resource "local_file" "stack_file" {
           key: "${var.zenml-minio-store-access-key}"
           secret: "${var.zenml-minio-store-secret-key}"
           client_kwargs: '{"endpoint_url":"${module.minio_server[0].artifact_S3_Endpoint_URL}", "region_name":"us-east-1"}'
-%{else}
-        id: ${uuid()}
-        flavor: local
-        name: default
-        configuration: {}
-%{endif}
       container_registry:
-%{if var.enable_container_registry || var.enable_kubernetes}
         id: ${uuid()}
         flavor: default
         name: k3d-${local.k3d_registry.name}-${random_string.cluster_id.result}
         configuration:
           uri: "k3d-${local.k3d_registry.name}-${random_string.cluster_id.result}.localhost:${local.k3d_registry.port}"
-%{endif}          
       orchestrator:
         id: ${uuid()}
         flavor: kubeflow

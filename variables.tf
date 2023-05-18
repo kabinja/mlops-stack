@@ -1,22 +1,3 @@
-# enable services
-variable "enable_container_registry" {
-  description = "Enable K3D registry deployment"
-  default     = true
-}
-variable "enable_kubernetes" {
-  description = "Enable Kubernetes deployment"
-  default     = false
-}
-variable "enable_minio" {
-  description = "Enable Minio deployment"
-  default     = true
-}
-variable "enable_zenml" {
-  description = "Enable ZenML deployment"
-  default     = true
-}
-
-
 # variables for the MLflow tracking server and Minio S3 bucket
 variable "zenml-minio-store-access-key" {
   description = "Your access key for using Minio artifact store"
@@ -52,6 +33,6 @@ variable "seldon-secret-name" {
 # variables for creating a ZenML stack configuration file
 variable "zenml-version" {
   description = "The version of ZenML being used"
-  default     = "0.38.0"
+  default     = "0.39.1"
   type        = string
 }

@@ -2,7 +2,7 @@
 locals {
   k3d = {
     cluster_name        = "minimal-zenml-cluster"
-    image               = "rancher/k3s:v1.27.1-k3s1"
+    image               = "rancher/k3s:v1.24.4-k3s1"
     local_stores_path   = ""
     workloads_namespace = "zenml-workloads-k8s"
   }
@@ -37,7 +37,7 @@ locals {
   }
 
   mlflow = {
-    version = "0.7.19"
+    version = "0.7.13"
     # if not set, you'll need to pass the minio credentials to the pipeline/step.
     # E.g. when running with the default local orchestrator:
     #

@@ -1,8 +1,8 @@
 Description: |
   A recipe that creates a k3d cluster with a local registry,
-  and optionally deploys a Kubeflow orchestrator on top of it, a
+  and optionally deploys a Kubeflow and/or Tekton orchestrator on top of it, a
   minio storage as an artifact store, MLfow as an experiment tracker and Seldon
-  as a model server.
+  and/or KServe as a model server.
 
 Cloud: k3d
 
@@ -10,4 +10,4 @@ Prerequisites: |
   * Docker must be installed on your local machine.
   * Install k3d by running `curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash`.
   * You also need to be running Linux or Windows. MacOS is currently not supported 
-  for deployments involving Seldon in container environments.
+  for deployments involving Seldon and KServe in container environments.

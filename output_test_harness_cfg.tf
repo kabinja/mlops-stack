@@ -4,8 +4,6 @@
 resource "local_file" "test_framework_cfg_file" {
   content  = <<-ADD
 requirements:
-
-%{if var.enable_container_registry}
   - name: k3d-container-registry-${random_string.cluster_id.result}
     description: >-
       Local K3D container registry.
@@ -17,29 +15,6 @@ requirements:
         flavor: default
         configuration:
           uri: "k3d-${local.k3d_registry.name}-${random_string.cluster_id.result}.localhost:${local.k3d_registry.port}"
-%{endif}
-
-%{if var.enable_kubernetes}
-  - name: k3d-kubernetes-${random_string.cluster_id.result}
-    description: >-
-      K3D cluster that can be used as a kubernetes orchestrator.
-    system_tools:
-      - docker
-      - kubectl
-    capabilities:
-      synchronized: true
-    stacks:
-      - name: k3d-kubernetes-${random_string.cluster_id.result}
-        type: orchestrator
-        flavor: kubernetes
-        containerized: true
-        configuration:
-          kubernetes_context: "k3d-${k3d_cluster.zenml-cluster[0].name}"
-          synchronous: true
-          kubernetes_namespace: "${local.k3d.workloads_namespace}"
-          local: true
-%{endif}
-
   - name: k3d-kubeflow-${random_string.cluster_id.result}
     description: >-
       Kubeflow running in a local K3D cluster.
@@ -58,7 +33,6 @@ requirements:
           synchronous: true
           local: true
 
-%{if var.enable_minio}
   - name: k3d-minio-artifact-store-${random_string.cluster_id.result}
     description: >-
       Minio artifact store running in a local K3D cluster.
@@ -71,7 +45,6 @@ requirements:
           key: "${var.zenml-minio-store-access-key}"
           secret: "${var.zenml-minio-store-secret-key}"
           client_kwargs: '{"endpoint_url":"${module.minio_server[0].artifact_S3_Endpoint_URL}", "region_name":"us-east-1"}'
-%{endif}
 
   - name: k3d-mlflow-${random_string.cluster_id.result}
     description: >-
@@ -113,30 +86,9 @@ environments:
       - local-secrets-manager
       - k3d-seldon-${random_string.cluster_id.result}
     mandatory_requirements:
-%{if var.enable_minio}
       - k3d-minio-artifact-store-${random_string.cluster_id.result}
-%{endif}
     capabilities:
       synchronized: true
-
-%{if var.enable_kubernetes} 
-  - name: default-k3d-kubernetes-orchestrator
-    description: >-
-      Default deployment with K3D kubernetes orchestrator and other
-      K3D provided or local components.
-    deployment: default
-    requirements:
-      - data-validators
-      - k3d-mlflow-${random_string.cluster_id.result}
-      - k3d-seldon-${random_string.cluster_id.result}
-      - local-secrets-manager
-    mandatory_requirements:
-      - k3d-kubernetes-${random_string.cluster_id.result}
-      - k3d-container-registry-${random_string.cluster_id.result}
-%{if var.enable_minio}
-      - k3d-minio-artifact-store-${random_string.cluster_id.result}
-%{endif}
-%{endif}
 
   - name: default-k3d-kubeflow-orchestrator
     description: >-
@@ -151,9 +103,7 @@ environments:
     mandatory_requirements:
       - k3d-kubeflow-${random_string.cluster_id.result}
       - k3d-container-registry-${random_string.cluster_id.result}
-%{if var.enable_minio}
       - k3d-minio-artifact-store-${random_string.cluster_id.result}
-%{endif}
 
     # IMPORTANT: don't use this with pytest auto-provisioning. Running forked
     # daemons in pytest leads to serious issues because the whole test process
@@ -170,9 +120,7 @@ environments:
       - local-secrets-manager
       - k3d-seldon-${random_string.cluster_id.result}
     mandatory_requirements:
-%{if var.enable_minio}
       - k3d-minio-artifact-store-${random_string.cluster_id.result}
-%{endif}
     capabilities:
       synchronized: true
 
@@ -180,25 +128,6 @@ environments:
     # daemons in pytest leads to serious issues because the whole test process
     # is forked. As a workaround, the deployment can be started separately,
     # before pytest is invoked.
-
-%{if var.enable_kubernetes}
-  - name: local-server-k3d-kubernetes-orchestrator
-    description: >-
-      Local server deployment with K3D kubernetes orchestrator and other
-      K3D provided or local components.
-    deployment: local-server
-    requirements:
-      - data-validators
-      - k3d-mlflow-${random_string.cluster_id.result}
-      - k3d-seldon-${random_string.cluster_id.result}
-      - local-secrets-manager
-    mandatory_requirements:
-      - k3d-kubernetes-${random_string.cluster_id.result}
-      - k3d-container-registry-${random_string.cluster_id.result}
-%{if var.enable_minio}
-      - k3d-minio-artifact-store-${random_string.cluster_id.result}
-%{endif}
-%{endif}
 
     # IMPORTANT: don't use this with pytest auto-provisioning. Running forked
     # daemons in pytest leads to serious issues because the whole test process
@@ -217,9 +146,7 @@ environments:
     mandatory_requirements:
       - k3d-kubeflow-${random_string.cluster_id.result}
       - k3d-container-registry-${random_string.cluster_id.result}
-%{if var.enable_minio}
       - k3d-minio-artifact-store-${random_string.cluster_id.result}
-%{endif}
     ADD
   filename = "./k3d_test_framework_cfg.yaml"
 }

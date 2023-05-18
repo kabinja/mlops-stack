@@ -2,7 +2,7 @@
 module "minio_server" {
   source = "./modules/minio-module"
 
-  count = (var.enable_minio) ? 1 : 0
+  count = 1
 
   # run only after the eks cluster is set up
   depends_on = [
@@ -35,7 +35,7 @@ provider "minio" {
 # Create a bucket for ZenML to use
 resource "minio_s3_bucket" "zenml_bucket" {
 
-  count = (var.enable_minio) ? 1 : 0
+  count = 1
 
   bucket        = local.minio.zenml_minio_store_bucket
   force_destroy = true
