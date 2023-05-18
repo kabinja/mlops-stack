@@ -4,10 +4,8 @@ module "mlflow" {
 
   count = 1
 
-  # run only after the gke cluster and nginx-ingress are set up
   depends_on = [
     k3d_cluster.zenml-cluster,
-    module.nginx-ingress,
     module.istio,
     module.minio_server,
   ]
@@ -45,7 +43,6 @@ resource "minio_s3_bucket" "mlflow_bucket" {
 
   depends_on = [
     module.minio_server,
-    module.nginx-ingress,
     module.istio,
   ]
 }

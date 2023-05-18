@@ -27,10 +27,6 @@ locals {
     version = "1.14.1"
   }
 
-  nginx_ingress = {
-    version = "4.4.0"
-  }
-
   kubeflow = {
     version             = "1.8.3"
     ingress_host_prefix = "kubeflow"

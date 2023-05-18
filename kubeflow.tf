@@ -4,11 +4,8 @@ module "kubeflow-pipelines" {
 
   count = 1
 
-  # run only after the gke cluster is set up and nginx-ingress
-  # is installed 
   depends_on = [
     k3d_cluster.zenml-cluster,
-    module.nginx-ingress,
     module.istio,
   ]
 

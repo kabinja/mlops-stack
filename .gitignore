@@ -3,3 +3,4 @@ terraform.tfstate
 .terraform.tfstate.lock.info
 terraform.tfstate.backup
 .terraform
+/k3d_*.yaml

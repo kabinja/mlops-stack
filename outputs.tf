@@ -83,9 +83,6 @@ output "k3d-cluster-name" {
 output "container-registry-URI" {
   value = "k3d-${local.k3d_registry.name}-${random_string.cluster_id.result}.localhost:${local.k3d_registry.port}"
 }
-output "nginx-ingress-hostname" {
-  value = length(module.nginx-ingress) > 0 ? module.nginx-ingress[0].ingress-ip-address : null
-}
 output "istio-ingress-hostname" {
   value = length(module.istio) > 0 ? module.istio[0].ingress-ip-address : null
 }

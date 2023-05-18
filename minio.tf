@@ -42,7 +42,6 @@ resource "minio_s3_bucket" "zenml_bucket" {
 
   depends_on = [
     module.minio_server,
-    module.nginx-ingress,
     module.istio,
   ]
 }
