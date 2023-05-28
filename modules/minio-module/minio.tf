@@ -79,7 +79,7 @@ resource "kubernetes_deployment" "minio-deployment" {
         }
         container {
           name  = "zenml-minio-fs"
-          image = "quay.io/minio/minio"
+          image = "minio/minio"
           args  = ["server", "/data", "--console-address", ":9001"]
           env {
             name  = "MINIO_ACCESS_KEY"
@@ -139,51 +139,7 @@ resource "kubernetes_service" "zenml-minio-service" {
   ]
 }
 
-# Create ingress for minio if istio is not inabled
-resource "kubectl_manifest" "zenml-minio-ingress" {
-  count     = var.istio_enabled ? 0 : 1
-  yaml_body = <<YAML
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: zenml-minio-ingress
-  namespace: zenml-minio
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 0m
-    nginx.org/client-max-body-size: 0m
-    nginx.org/proxy-buffering: "False"
-%{if var.tls_enabled}
-    cert-manager.io/cluster-issuer: letsencrypt-staging
-%{endif}
-    ingress.annotations.nginx.ingress.kubernetes.io/ssl-redirect: "${var.tls_enabled}"
-spec:
-  ingressClassName: nginx
-%{if var.tls_enabled}
-  tls:
-    - hosts:
-        - ${var.ingress_host}
-      secretName: zenml-minio-tls
-%{endif}
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: zenml-minio-service
-                port:
-                  number: 9000       
-      host: ${var.ingress_host}
-YAML    
-  depends_on = [
-    kubernetes_service.zenml-minio-service,
-  ]
-}
-
-# Create Gateway and VirtualService if istio is enabled
 resource "kubectl_manifest" "zenml-minio-gateway" {
-  count     = var.istio_enabled ? 1 : 0
   yaml_body = <<YAML
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -220,7 +176,6 @@ YAML
 }
 
 resource "kubectl_manifest" "zenml-minio-virtualservice" {
-  count     = var.istio_enabled ? 1 : 0
   yaml_body = <<YAML
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -247,49 +202,8 @@ YAML
   ]
 }
 
-
-# Create Ingress for Minio if Istio is not enabled
-resource "kubectl_manifest" "zenml-minio-console-ingress" {
-  count     = var.istio_enabled ? 0 : 1
-  yaml_body = <<YAML
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: zenml-minio-console-ingress
-  namespace: zenml-minio
-  annotations:
-%{if var.tls_enabled}
-    cert-manager.io/cluster-issuer: letsencrypt-staging
-%{endif}
-    ingress.annotations.nginx.ingress.kubernetes.io/ssl-redirect: "${var.tls_enabled}"
-spec:
-  ingressClassName: nginx
-%{if var.tls_enabled}
-  tls:
-    - hosts:
-        - ${var.ingress_console_host}
-      secretName: zenml-minio-console-tls
-%{endif}
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: zenml-minio-service
-                port:
-                  number: 9001       
-      host: ${var.ingress_console_host}
-YAML    
-  depends_on = [
-    kubernetes_service.zenml-minio-service,
-  ]
-}
-
 # Create Gateway and VirtualService if istio is enabled
 resource "kubectl_manifest" "zenml-minio-console-gateway" {
-  count     = var.istio_enabled ? 1 : 0
   yaml_body = <<YAML
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -326,7 +240,6 @@ YAML
 }
 
 resource "kubectl_manifest" "zenml-minio-console-virtualservice" {
-  count     = var.istio_enabled ? 1 : 0
   yaml_body = <<YAML
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService

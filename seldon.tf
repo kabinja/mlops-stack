@@ -3,8 +3,6 @@
 module "seldon" {
   source = "./modules/seldon-module"
 
-  count = 1
-
   # run only after the eks cluster and istio are set up
   depends_on = [
     k3d_cluster.zenml-cluster,
@@ -17,9 +15,6 @@ module "seldon" {
 
 # the namespace where zenml will deploy seldon models
 resource "kubernetes_namespace" "seldon-workloads" {
-
-  count = 1
-
   metadata {
     name = local.seldon.workloads_namespace
   }
@@ -31,9 +26,6 @@ resource "kubernetes_namespace" "seldon-workloads" {
 # secrets, serviceaccounts, and Seldon deployments in the namespace where it
 # will deploy models
 resource "kubernetes_cluster_role_v1" "seldon" {
-
-  count = 1
-
   metadata {
     name = "seldon-workloads"
     labels = {
@@ -54,17 +46,14 @@ resource "kubernetes_cluster_role_v1" "seldon" {
 
 # assign role to kubeflow pipeline runner
 resource "kubernetes_role_binding_v1" "kubeflow-seldon" {
-
-  count = 1
-
   metadata {
     name      = "kubeflow-seldon"
-    namespace = kubernetes_namespace.seldon-workloads[0].metadata[0].name
+    namespace = kubernetes_namespace.seldon-workloads.metadata[0].name
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role_v1.seldon[0].metadata[0].name
+    name      = kubernetes_cluster_role_v1.seldon.metadata[0].name
   }
   subject {
     kind      = "ServiceAccount"
@@ -79,17 +68,14 @@ resource "kubernetes_role_binding_v1" "kubeflow-seldon" {
 
 # assign role to kubernetes pipeline runner
 resource "kubernetes_role_binding_v1" "k8s-seldon" {
-
-  count = 1
-
   metadata {
     name      = "k8s-seldon"
-    namespace = kubernetes_namespace.seldon-workloads[0].metadata[0].name
+    namespace = kubernetes_namespace.seldon-workloads.metadata[0].name
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role_v1.seldon[0].metadata[0].name
+    name      = kubernetes_cluster_role_v1.seldon.metadata[0].name
   }
   subject {
     kind      = "ServiceAccount"
@@ -99,18 +85,15 @@ resource "kubernetes_role_binding_v1" "k8s-seldon" {
 }
 
 resource "kubernetes_secret" "seldon-secret" {
-
-  count = 1
-
   metadata {
     name      = var.seldon-secret-name
-    namespace = kubernetes_namespace.seldon-workloads[0].metadata[0].name
+    namespace = kubernetes_namespace.seldon-workloads.metadata[0].name
     labels    = { app = "zenml" }
   }
 
   data = {
     RCLONE_CONFIG_S3_ACCESS_KEY_ID     = "${var.zenml-minio-store-access-key}"
-    RCLONE_CONFIG_S3_ENDPOINT          = "${module.minio_server[0].artifact_S3_Endpoint_URL}"
+    RCLONE_CONFIG_S3_ENDPOINT          = "${module.minio_server.artifact_S3_Endpoint_URL}"
     RCLONE_CONFIG_S3_PROVIDER          = "Minio"
     RCLONE_CONFIG_S3_ENV_PATH          = "false"
     RCLONE_CONFIG_S3_SECRET_ACCESS_KEY = "${var.zenml-minio-store-secret-key}"

@@ -3,20 +3,21 @@ terraform {
   required_providers {
     k3d = {
       source = "pvotal-tech/k3d"
+      version = "0.0.6"
     }
     local = {
       source  = "hashicorp/local"
-      version = "2.1.0"
+      version = "2.4.0"
     }
 
     null = {
       source  = "hashicorp/null"
-      version = "3.1.0"
+      version = "3.2.1"
     }
 
     minio = {
       source  = "aminueza/minio"
-      version = "1.10.0"
+      version = "1.15.2"
     }
 
     kubectl = {
@@ -26,21 +27,21 @@ terraform {
 
     random = {
       source  = "hashicorp/random"
-      version = "3.4.3"
+      version = "3.5.1"
     }
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.11.0"
+      version = ">= 2.20.0"
     }
     htpasswd = {
       source  = "loafoe/htpasswd"
-      version = "1.0.3"
+      version = "1.0.4"
     }
 
     external = {
       source  = "hashicorp/external"
-      version = "2.2.3"
+      version = "2.3.1"
     }
   }
 

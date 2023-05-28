@@ -15,7 +15,7 @@ resource "local_file" "stack_file" {
           path: "s3://${local.minio.zenml_minio_store_bucket}"
           key: "${var.zenml-minio-store-access-key}"
           secret: "${var.zenml-minio-store-secret-key}"
-          client_kwargs: '{"endpoint_url":"${module.minio_server[0].artifact_S3_Endpoint_URL}", "region_name":"us-east-1"}'
+          client_kwargs: '{"endpoint_url":"${module.minio_server.artifact_S3_Endpoint_URL}", "region_name":"us-east-1"}'
       container_registry:
         id: ${uuid()}
         flavor: default
@@ -27,7 +27,7 @@ resource "local_file" "stack_file" {
         flavor: kubeflow
         name: k3d-kubeflow-${random_string.cluster_id.result}
         configuration:
-          kubernetes_context: "k3d-${k3d_cluster.zenml-cluster[0].name}"
+          kubernetes_context: "k3d-${k3d_cluster.zenml-cluster.name}"
           synchronous: true
           local: true
       experiment_tracker:
@@ -35,7 +35,7 @@ resource "local_file" "stack_file" {
         flavor: mlflow
         name: k3d-mlflow-${random_string.cluster_id.result}
         configuration:
-          tracking_uri: "${module.mlflow[0].mlflow-tracking-URL}"
+          tracking_uri: "${module.mlflow.mlflow-tracking-URL}"
           tracking_username: "${var.mlflow-username}"
           tracking_password: "${var.mlflow-password}"
       model_deployer:
@@ -43,9 +43,9 @@ resource "local_file" "stack_file" {
         flavor: seldon
         name: k3d-seldon-${random_string.cluster_id.result}
         configuration:
-          kubernetes_context: "k3d-${k3d_cluster.zenml-cluster[0].name}"
+          kubernetes_context: "k3d-${k3d_cluster.zenml-cluster.name}"
           kubernetes_namespace: "${local.seldon.workloads_namespace}"
-          base_url:  "http://${module.istio[0].ingress-ip-address}"
+          base_url:  "http://${module.istio.ingress-ip-address}"
           kubernetes_secret_name: "${var.seldon-secret-name}"
       secrets_manager:
         id: ${uuid()}

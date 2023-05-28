@@ -15,7 +15,6 @@ resource "k3d_registry" "zenml-registry" {
   # registry from the host.
   name  = "${local.k3d_registry.name}-${random_string.cluster_id.result}.localhost"
   image = "docker.io/registry:2"
-  count = 1
 
   port {
     host_port = local.k3d_registry.port
@@ -23,33 +22,10 @@ resource "k3d_registry" "zenml-registry" {
   }
 }
 
-# This is a hack to attempt get the local stores path from the zenml config
-# and pass it to the k3d cluster resource, if not set in the local config.
-data "external" "zenml_local_stores_path" {
-  program = [
-    "python",
-    "-u",
-    "-c",
-    <<-ZENML
-%{if local.k3d.local_stores_path != ""}
-path = "${local.k3d.local_stores_path}"
-%{else}
-try:
-  from zenml.config.global_config import GlobalConfiguration
-  path = GlobalConfiguration().local_stores_path
-except Exception:
-  path = ""
-%{endif}
-print('{"path": "' + path + '"}')
-    ZENML
-  ]
-}
-
 resource "k3d_cluster" "zenml-cluster" {
   name    = "${local.k3d.cluster_name}-${random_string.cluster_id.result}"
   servers = 1
   agents  = 2
-  count = 1
 
   kube_api {
     host    = local.k3d_kube_api.host
@@ -58,15 +34,7 @@ resource "k3d_cluster" "zenml-cluster" {
 
   image = local.k3d.image
   registries {
-    use = ["${k3d_registry.zenml-registry[0].name}:${k3d_registry.zenml-registry[0].port[0].host_port}"]
-  }
-
-  dynamic "volume" {
-    for_each = data.external.zenml_local_stores_path.result.path != "" ? [data.external.zenml_local_stores_path.result.path] : []
-    content {
-      source      = "/${volume.value}"
-      destination = "/${volume.value}"
-    }
+    use = ["${k3d_registry.zenml-registry.name}:${k3d_registry.zenml-registry.port[0].host_port}"]
   }
 
   port {

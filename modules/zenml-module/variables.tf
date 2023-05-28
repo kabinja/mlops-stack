@@ -55,10 +55,6 @@ variable "ingress_host" {
   default     = ""
   type        = string
 }
-variable "istio_enabled" {
-  type    = bool
-  default = false
-}
 variable "ingress_tls" {
   description = "Whether to enable tls on the ingress or not"
   default     = false

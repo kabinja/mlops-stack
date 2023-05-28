@@ -1,7 +1,7 @@
 # config values to use across the module
 locals {
   k3d = {
-    cluster_name        = "minimal-zenml-cluster"
+    cluster_name        = "mlops-cluster"
     image               = "rancher/k3s:v1.24.4-k3s1"
     local_stores_path   = ""
     workloads_namespace = "zenml-workloads-k8s"
@@ -17,7 +17,7 @@ locals {
   }
 
   minio = {
-    storage_size                = "10Gi"
+    storage_size                = "2Gi"
     zenml_minio_store_bucket    = "zenml-minio-store"
     ingress_host_prefix         = "minio"
     ingress_console_host_prefix = "minio-console"

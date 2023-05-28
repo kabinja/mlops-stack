@@ -123,39 +123,6 @@ resource "helm_release" "mlflow-tracking" {
     }
   }
 
-  # set values for Azure Blob Storage
-  set {
-    name  = "artifactRoot.azureBlob.enabled"
-    value = var.artifact_Azure
-    type  = "auto"
-  }
-  set {
-    name  = "artifactRoot.azureBlob.storageAccount"
-    value = var.artifact_Azure_Storage_Account_Name
-    type  = "string"
-  }
-  set {
-    name  = "artifactRoot.azureBlob.container"
-    value = var.artifact_Azure_Container
-    type  = "string"
-  }
-  set_sensitive {
-    name  = "artifactRoot.azureBlob.accessKey"
-    value = var.artifact_Azure_Access_Key
-    type  = "string"
-  }
-
-  # set values for GCS artifact store
-  set {
-    name  = "artifactRoot.gcs.enabled"
-    value = var.artifact_GCS
-    type  = "auto"
-  }
-  set {
-    name  = "artifactRoot.gcs.bucket"
-    value = var.artifact_GCS_Bucket
-    type  = "string"
-  }
   depends_on = [
     resource.kubernetes_namespace.mlflow
   ]
