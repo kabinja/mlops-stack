@@ -5,13 +5,13 @@ resource "null_resource" "kubeflow" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -k 'github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=${self.triggers.pipeline_version}&timeout=5m'"
+    command = "kubectl apply -k 'github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=${self.triggers.pipeline_version}'"
   }
   provisioner "local-exec" {
     command = "kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io"
   }
   provisioner "local-exec" {
-    command = "kubectl apply -k 'github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=${self.triggers.pipeline_version}&timeout=5m'"
+    command = "kubectl apply -k 'github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=${self.triggers.pipeline_version}'"
   }
 
   # destroy-time provisioners

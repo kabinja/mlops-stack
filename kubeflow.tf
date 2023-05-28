@@ -5,6 +5,8 @@ module "kubeflow-pipelines" {
   depends_on = [
     k3d_cluster.zenml-cluster,
     module.istio,
+    module.minio_server,
+    module.mlflow
   ]
 
   pipeline_version = local.kubeflow.version

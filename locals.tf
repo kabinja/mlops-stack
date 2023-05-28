@@ -28,7 +28,7 @@ locals {
   }
 
   kubeflow = {
-    version             = "1.8.3"
+    version             = "1.8.5"
     ingress_host_prefix = "kubeflow"
   }
 
