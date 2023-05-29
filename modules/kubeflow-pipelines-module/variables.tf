@@ -1,6 +1,6 @@
 variable "pipeline_version" {
   type    = string
-  default = "1.8.3"
+  default = "2.0.0-alpha.4"
 }
 
 variable "ingress_host" {
