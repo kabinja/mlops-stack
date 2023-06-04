@@ -4,7 +4,7 @@ resource "random_string" "cluster_id" {
   upper   = false
 }
 
-resource "k3d_registry" "zenml-registry" {
+resource "k3d_registry" "mlops_registry" {
   # IMPORTANT: the registry name must contain the `.localhost` suffix because
   # this is the only way to make it accessible using the same hostname from
   # both the host and from inside the cluster. K3D automatically maps the
@@ -22,7 +22,7 @@ resource "k3d_registry" "zenml-registry" {
   }
 }
 
-resource "k3d_cluster" "zenml-cluster" {
+resource "k3d_cluster" "mlops_cluster" {
   name    = "${local.k3d.cluster_name}-${random_string.cluster_id.result}"
   servers = 1
   agents  = 2
@@ -34,7 +34,7 @@ resource "k3d_cluster" "zenml-cluster" {
 
   image = local.k3d.image
   registries {
-    use = ["${k3d_registry.zenml-registry.name}:${k3d_registry.zenml-registry.port[0].host_port}"]
+    use = ["${k3d_registry.mlops_registry.name}:${k3d_registry.mlops_registry.port[0].host_port}"]
   }
 
   port {
@@ -62,6 +62,6 @@ resource "k3d_cluster" "zenml-cluster" {
   }
 
   depends_on = [
-    k3d_registry.zenml-registry,
+    k3d_registry.mlops_registry,
   ]
 }

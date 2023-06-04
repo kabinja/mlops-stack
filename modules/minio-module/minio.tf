@@ -1,11 +1,11 @@
 # Create namespace for minio
-resource "kubernetes_namespace" "minio-namespace" {
+resource "kubernetes_namespace" "minio_namespace" {
   metadata {
     name = "zenml-minio"
   }
 }
 
-resource "kubernetes_persistent_volume" "minio-pv" {
+resource "kubernetes_persistent_volume" "minio_persistent_volume" {
   metadata {
     name = "minio-pv"
     labels = {
@@ -25,11 +25,11 @@ resource "kubernetes_persistent_volume" "minio-pv" {
     }
   }
   depends_on = [
-    kubernetes_namespace.minio-namespace,
+    kubernetes_namespace.minio_namespace,
   ]
 }
 # Create persistent volume claim for minio to store data
-resource "kubernetes_persistent_volume_claim" "minio-pvc" {
+resource "kubernetes_persistent_volume_claim" "minio_persistent_volume_claim" {
   metadata {
     name      = "minio-server-pvc"
     namespace = "zenml-minio"
@@ -44,7 +44,7 @@ resource "kubernetes_persistent_volume_claim" "minio-pvc" {
     }
   }
   depends_on = [
-    kubernetes_persistent_volume.minio-pv,
+    kubernetes_persistent_volume.minio_persistent_volume,
   ]
 }
 
@@ -106,7 +106,7 @@ resource "kubernetes_deployment" "minio-deployment" {
     }
   }
   depends_on = [
-    kubernetes_persistent_volume_claim.minio-pvc,
+    kubernetes_persistent_volume_claim.minio_persistent_volume_claim,
   ]
 }
 

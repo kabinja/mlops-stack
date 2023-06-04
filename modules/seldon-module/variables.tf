@@ -7,7 +7,7 @@ variable "istio_gateway_name" {
   type    = string
   default = "seldon-gateway"
 }
-variable "istio_ns" {
+variable "istio_namespace" {
   type    = string
   default = "istio-system"
 }

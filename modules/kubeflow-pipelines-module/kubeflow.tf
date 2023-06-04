@@ -26,12 +26,12 @@ resource "null_resource" "kubeflow" {
 }
 
 # Create Gateway and VirtualService if istio is enabled
-resource "kubectl_manifest" "kubeflow-ui-gateway" {
+resource "kubectl_manifest" "kubeflow_ui_gateway" {
   yaml_body = <<YAML
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: zenml-kubeflow-ui-gateway
+  name: kubeflow-ui-gateway
   namespace: kubeflow
 spec:
   selector:
@@ -73,7 +73,7 @@ spec:
   hosts:
   - ${var.ingress_host}
   gateways:
-  - zenml-kubeflow-ui-gateway
+  - kubeflow-ui-gateway
   http:
   - match:
     - uri:

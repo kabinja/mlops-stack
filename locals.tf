@@ -4,11 +4,11 @@ locals {
     cluster_name        = "mlops-cluster"
     image               = "rancher/k3s:v1.24.4-k3s1"
     local_stores_path   = ""
-    workloads_namespace = "zenml-workloads-k8s"
+    workloads_namespace = "mlops-workloads-k8s"
   }
 
   k3d_registry = {
-    name = "zenml-registry"
+    name = "mlops-registry"
     port = "5001"
   }
 
@@ -18,7 +18,7 @@ locals {
 
   minio = {
     storage_size                = "2Gi"
-    zenml_minio_store_bucket    = "zenml-minio-store"
+    zenml_minio_store_bucket    = "mlops-minio-store"
     ingress_host_prefix         = "minio"
     ingress_console_host_prefix = "minio-console"
   }
@@ -34,12 +34,7 @@ locals {
 
   mlflow = {
     version = "0.7.13"
-    # if not set, you'll need to pass the minio credentials to the pipeline/step.
-    # E.g. when running with the default local orchestrator:
-    #
-    #  AWS_ACCESS_KEY_ID=zenml AWS_SECRET_ACCESS_KEY=supersafepassword MLFLOW_S3_ENDPOINT_URL="http://minio.172.24.0.3.nip.io" python run.py
-    #
-    artifact_Proxied_Access = "true"
+    artifact_proxied_access = "true"
     ingress_host_prefix     = "mlflow"
   }
 
@@ -47,7 +42,7 @@ locals {
     version              = "1.15.0"
     name                 = "seldon"
     namespace            = "seldon-system"
-    workloads_namespace  = "zenml-workloads-seldon"
+    workloads_namespace  = "mlops-workloads-seldon"
     service_account_name = "seldon"
   }
 

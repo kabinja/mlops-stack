@@ -17,7 +17,7 @@ Output | Description
 ingress-controller-name | Used for getting the ingress URL for the MLflow tracking server|
 ingress-controller-namespace | Used for getting the ingress URL for the MLflow tracking server|
 
-The tracking URI is obtained by querying the relevant Kubernetes service that exposes the tracking server. This is done automatically when you execute any recipe. You can use the `mlflow-tracking-URL` output to get this value.
+The tracking URI is obtained by querying the relevant Kubernetes service that exposes the tracking server. This is done automatically when you execute any recipe. You can use the `mlflow_tracking_url` output to get this value.
 
 However, you can also manually query the URL by using the folowing command.
 

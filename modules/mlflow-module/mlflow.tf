@@ -6,7 +6,7 @@ resource "kubernetes_namespace" "mlflow" {
 }
 
 # create the mlflow tracking server deployment
-resource "helm_release" "mlflow-tracking" {
+resource "helm_release" "mlflow_tracking" {
 
   name       = "mlflow-tracking"
   repository = "https://community-charts.github.io/helm-charts"
@@ -18,7 +18,7 @@ resource "helm_release" "mlflow-tracking" {
   # set ingress 
   set {
     name  = "ingress.enabled"
-    value = var.ingress_host != "" ? true : false
+    value = true
     type  = "auto"
   }
   set {
@@ -89,7 +89,7 @@ resource "helm_release" "mlflow-tracking" {
   # set proxied access to artifact storage
   set {
     name  = "artifactRoot.proxiedArtifactStorage"
-    value = var.artifact_Proxied_Access
+    value = var.artifact_proxied_access
     type  = "auto"
   }
 
@@ -115,7 +115,7 @@ resource "helm_release" "mlflow-tracking" {
     type  = "string"
   }
   dynamic "set" {
-    for_each = var.artifact_S3_Endpoint_URL != "" ? [var.artifact_S3_Endpoint_URL] : []
+    for_each = var.artifact_s3_endpoint_url != "" ? [var.artifact_s3_endpoint_url] : []
     content {
       name  = "extraEnvVars.MLFLOW_S3_ENDPOINT_URL"
       value = set.value

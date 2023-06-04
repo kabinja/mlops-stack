@@ -5,7 +5,7 @@ module "seldon" {
 
   # run only after the eks cluster and istio are set up
   depends_on = [
-    k3d_cluster.zenml-cluster,
+    k3d_cluster.mlops_cluster,
     module.istio
   ]
 
@@ -62,7 +62,7 @@ resource "kubernetes_role_binding_v1" "kubeflow-seldon" {
   }
 
   depends_on = [
-    module.kubeflow-pipelines,
+    module.kubeflow_pipelines,
   ]
 }
 
@@ -86,17 +86,17 @@ resource "kubernetes_role_binding_v1" "k8s-seldon" {
 
 resource "kubernetes_secret" "seldon-secret" {
   metadata {
-    name      = var.seldon-secret-name
+    name      = var.seldon_secret_name
     namespace = kubernetes_namespace.seldon-workloads.metadata[0].name
     labels    = { app = "zenml" }
   }
 
   data = {
-    RCLONE_CONFIG_S3_ACCESS_KEY_ID     = "${var.zenml-minio-store-access-key}"
-    RCLONE_CONFIG_S3_ENDPOINT          = "${module.minio_server.artifact_S3_Endpoint_URL}"
+    RCLONE_CONFIG_S3_ACCESS_KEY_ID     = "${var.minio_store_access_key}"
+    RCLONE_CONFIG_S3_ENDPOINT          = "${module.minio_server.artifact_s3_endpoint_url}"
     RCLONE_CONFIG_S3_PROVIDER          = "Minio"
     RCLONE_CONFIG_S3_ENV_PATH          = "false"
-    RCLONE_CONFIG_S3_SECRET_ACCESS_KEY = "${var.zenml-minio-store-secret-key}"
+    RCLONE_CONFIG_S3_SECRET_ACCESS_KEY = "${var.minio_store_secret_key}"
     RCLONE_CONFIG_S3_TYPE              = "s3"
   }
 

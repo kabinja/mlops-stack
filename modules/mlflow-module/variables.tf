@@ -20,7 +20,7 @@ variable "tls_enabled" {
   default = true
 }
 
-variable "artifact_Proxied_Access" {
+variable "artifact_proxied_access" {
   type    = bool
   default = false
 }
@@ -41,7 +41,7 @@ variable "artifact_S3_Secret_Key" {
   type    = string
   default = ""
 }
-variable "artifact_S3_Endpoint_URL" {
+variable "artifact_s3_endpoint_url" {
   type    = string
   default = ""
 }

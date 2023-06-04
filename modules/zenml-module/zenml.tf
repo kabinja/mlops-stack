@@ -1,5 +1,5 @@
 # create the ZenML Server deployment
-resource "kubernetes_namespace" "zen-server" {
+resource "kubernetes_namespace" "zenml_namespace" {
   metadata {
     name = var.namespace
   }
@@ -58,11 +58,11 @@ resource "local_file" "db_client_key" {
   ]
 }
 
-resource "helm_release" "zen-server" {
+resource "helm_release" "zenml_namespace" {
 
   name      = "zenml-server"
   chart     = "${path.root}/helm/src/zenml/zen_server/deploy/helm"
-  namespace = kubernetes_namespace.zen-server.metadata[0].name
+  namespace = kubernetes_namespace.zenml_namespace.metadata[0].name
 
 
   set {
@@ -148,7 +148,7 @@ resource "helm_release" "zen-server" {
     local_file.db_ca_cert,
     local_file.db_client_cert,
     local_file.db_client_key,
-    resource.kubernetes_namespace.zen-server
+    resource.kubernetes_namespace.zenml_namespace
   ]
 }
 
@@ -164,6 +164,6 @@ data "kubernetes_secret" "certificates" {
   }
 
   depends_on = [
-    helm_release.zen-server
+    helm_release.zenml_namespace
   ]
 }

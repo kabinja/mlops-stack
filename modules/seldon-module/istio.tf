@@ -7,7 +7,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: ${var.istio_gateway_name}
-  namespace: ${var.istio_ns}
+  namespace: ${var.istio_namespace}
 spec:
   selector:
     istio: ingressgateway # use istio default controller
@@ -19,9 +19,9 @@ spec:
     hosts:
     - "*"
 YAML    
-  override_namespace = kubernetes_namespace.seldon-ns.metadata[0].name
+  override_namespace = kubernetes_namespace.seldon_namespace.metadata[0].name
   depends_on = [
-    resource.kubernetes_namespace.seldon-ns
+    resource.kubernetes_namespace.seldon_namespace
   ]
 }
 

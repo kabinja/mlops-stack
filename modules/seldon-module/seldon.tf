@@ -1,5 +1,5 @@
 # creating the namespace for the seldon deployment
-resource "kubernetes_namespace" "seldon-ns" {
+resource "kubernetes_namespace" "seldon_namespace" {
   metadata {
     name = var.namespace
   }
@@ -13,8 +13,8 @@ resource "helm_release" "seldon" {
   chart      = "seldon-core-operator"
   version    = var.chart_version
 
-  # dependency on seldon-ns
-  namespace = kubernetes_namespace.seldon-ns.metadata[0].name
+  # dependency on seldon_namespace
+  namespace = kubernetes_namespace.seldon_namespace.metadata[0].name
 
   # values dervied from the zenml seldon-core example at
   # https://github.com/zenml-io/zenml/blob/main/examples/seldon_deployment/README.md#installing-seldon-core-eg-in-an-eks-cluster
@@ -34,6 +34,6 @@ resource "helm_release" "seldon" {
   }
 
   depends_on = [
-    resource.kubernetes_namespace.seldon-ns
+    resource.kubernetes_namespace.seldon_namespace
   ]
 }
